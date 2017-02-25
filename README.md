@@ -1,12 +1,8 @@
 # SMS Backup+ Backup
 
-*David Couzelis, 2017*
-
 ## Background
 
-There is an outstanding open source application for Android devices called "SMS Backup+" that will automatically upload your SMS (and MMS) to an IMAP server, such as Gmail. See here for more information:
-
-**SMS Backup+**, *Jan Berkel*, https://github.com/jberkel/sms-backup-plus
+There is an outstanding open source application for Android devices called [SMS Backup+](https://github.com/jberkel/sms-backup-plus) (by Jan Berkel) that will automatically upload your SMS (and MMS) to an IMAP server, such as Gmail.
 
 In addition to having a copy saved online, I also want to be able to have a nicely formatted local copy of my messages (text files, pictures...). That's where this software comes in...
 
@@ -16,11 +12,9 @@ This software allows you to save the messages that were backed up to Gmail by SM
 
 ## Usage
 
-Go to the Gmail website to download an archive of your messages. Be sure to only select the message that were uploaded by SMS Backup+ and that you want saved.
+Go to the Gmail website to [download an archive of your messages](https://takeout.google.com/settings/takeout). Be sure to only select the message that were uploaded by SMS Backup+ and that you want saved.
 
-    https://takeout.google.com/settings/takeout
-
-Extract the mbox file from the download and send it to the function provided in this software.
+Extract the mbox file from the download, and send it to the function provided in this software.
 
 See the Python docstring for more information on usage.
 
