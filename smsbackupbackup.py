@@ -3,8 +3,8 @@
 # smsbackupbackup
 # David Couzelis, 2017
 
-import mailbox
 import datetime
+import mailbox
 import sys
 
 def run(mbox_filename, my_name, my_descriptor_list, friend_name, friend_descriptor_list):
@@ -38,6 +38,8 @@ def run(mbox_filename, my_name, my_descriptor_list, friend_name, friend_descript
     for key in mbox.keys():
         datetime_str = datetime.datetime.strptime(mbox[key]['Date'], '%a, %d %b %Y %H:%M:%S %z')
         messages[datetime_str] = mbox[key]
+
+    attachment_count = 100
     
     for datetime_str in sorted(messages):
     
@@ -47,17 +49,18 @@ def run(mbox_filename, my_name, my_descriptor_list, friend_name, friend_descript
         sms_str = str()
     
         # Begin the line of output with who sent the message...
-        if any(x in message['From'] for x in friend_descriptor_list):
+        if any(x in message['From'] for x in friend_descriptor_list) and any(x in message['To'] for x in my_descriptor_list):
             # This message was sent by the friend
             sms_str += friend_name + ' '
             from_me = False
-        elif any(x in message['From'] for x in my_descriptor_list):
+        elif any(x in message['From'] for x in my_descriptor_list) and any(x in message['To'] for x in friend_descriptor_list):
             # This message was sent by me
             sms_str += my_name + ' '
         else:
             # I have no clue who sent this message!
             print('WARNING: Unknown sender: ' + message['From'], file=sys.stderr)
-            sms_str += message['From']
+            # Skip it
+            continue
     
         # ...Next, add a timestamp to the message...
         sms_str += datetime_str.strftime('(%Y-%m-%d %H:%M:%S): ')
@@ -74,8 +77,10 @@ def run(mbox_filename, my_name, my_descriptor_list, friend_name, friend_descript
                     # (...as long as they're not from me, I already have a copy!...)
                     if not from_me:
                         sms_str += '[' + part.get_filename() + '] '
-                        with open(datetime_str.strftime('%Y%m%d') + '-' + part.get_filename(), 'wb') as attachment_file:
+                        filename = datetime_str.strftime('%Y%m%d') + '-' + str(attachment_count) + '-' + part.get_filename()
+                        with open(filename, 'wb') as attachment_file:
                             attachment_file.write(part.get_payload(decode=True))
+                        attachment_count += 1
                 elif part.get_content_type() == 'text/plain':
                     # ...And save any other text that was included in the message, too...
                     sms_str += part.get_payload(decode=True).decode('utf-8').strip().replace('\r', '')
